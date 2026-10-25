@@ -1,0 +1,57 @@
+{
+  "version": "3.5.2",
+  "files": [
+    {
+      "path": "nexcore.lua",
+      "bytes": 1097
+    },
+    {
+      "path": "inspect.lua",
+      "bytes": 715
+    },
+    {
+      "path": "startup.example.lua",
+      "bytes": 189
+    },
+    {
+      "path": "config/default.lua",
+      "bytes": 638
+    },
+    {
+      "path": "config/local.example.lua",
+      "bytes": 268
+    },
+    {
+      "path": "src/nexcore/app.lua",
+      "bytes": 2980
+    },
+    {
+      "path": "src/nexcore/calibration.lua",
+      "bytes": 1593
+    },
+    {
+      "path": "src/nexcore/control.lua",
+      "bytes": 2451
+    },
+    {
+      "path": "src/nexcore/display.lua",
+      "bytes": 1838
+    },
+    {
+      "path": "src/nexcore/hardware.lua",
+      "bytes": 4357
+    },
+    {
+      "path": "src/nexcore/log.lua",
+      "bytes": 1972
+    },
+    {
+      "path": "src/nexcore/supervisor.lua",
+      "bytes": 995
+    },
+    {
+      "path": "src/nexcore/util.lua",
+      "bytes": 496
+    }
+  ]
+}
