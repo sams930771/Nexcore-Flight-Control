@@ -1,29 +1,72 @@
-# NEXCORE Flight Control v3.5.2
+# NEXCORE Flight Control v3.5.3
 
-Modular CC:Tweaked / Create Aeronautics controller, rebuilt from the supplied v3.5.1 source. Open this folder in VS Code. Upload **its contents** to your GitHub repository root to use the installer.
+Original-interface restoration built directly from the user-supplied **Nexcore-Flight-Control-main.zip**, the working v3.5.2 controller. The original screenshot defines the main screen; the working ZIP defines flight behavior.
 
-## Preserved behavior
+![Restored 51-column by 19-row main screen](docs/interface-main.png)
+
+The preview is a rendered terminal fixture, not an in-game screenshot. Its glyph shapes were sampled from the supplied design reference; live values and status messages come from the retained backend.
+
+## Controls
 
 | Key | Action |
 | --- | --- |
-| T | Enter target absolute altitude; Enter accepts, Escape cancels |
-| G | GO: apply the nearest calibrated integer power once |
-| H | HOLD current power; this is not altitude PID |
-| M | MANUAL; leaves current power unchanged |
-| + / - | Adjust manual power by exactly 1; keypad supported |
-| D | Diagnostic scan; re-read burner power without changing scroll values |
-| **Q** | **Exit to computer shell; leave burners running** |
-| **X** | **Disable left/right redstone outputs and exit** |
+| T | Set target absolute altitude; Enter accepts, Escape cancels |
+| G | GO: select nearest calibrated integer power once |
+| H | HOLD current power |
+| M | MANUAL |
+| + / - | Adjust manual power by exactly one, including keypad |
+| D | Diagnostic scan, unchanged |
+| F1 | Toggle main/diagnostics page; new presentation-only shortcut |
+| Q | Exit to computer shell, leave burners running |
+| X | Turn burner redstone enables off and exit; retain scroll values |
 
-Q and X work during target entry. Ctrl+T termination also exits hands off. Holding a key does not generate repeated power commands. Wait for a pending write to finish before requesting another power change.
+Q/X remain active during target entry and worker restart backoff. Ctrl+T exits hands off. F1 works while typing a target without losing the entry. H holds power, not altitude PID. GO remains the original one-time calibrated power selection, with the original stale-data guard and arrival-to-HOLD check.
 
-Hardware is **left/right** burners (`getScrollValue`, `setScrollValue`) and **back** sensor (`getHeight`). The earlier conversation mentioned `getAltitude`, but the actual supplied source uses `getHeight`; this project follows that source. Manual power is **0–500**, GO is **38–48**, tick interval is **0.25 s**, arrival tolerance is **0.35 blocks** with vertical speed below **0.05 blocks/s**.
+## Install / publish
 
-Startup reads both existing burner scroll values before enabling both redstone outputs, matching v3.5.1's activation behavior. It does not reset power to a default or write scroll values at startup. If left/right values differ, both are preserved and a mismatch is shown. The next accepted manual power command synchronizes both sides. Q, Ctrl+T and unexpected controller errors preserve outputs; X turns redstone off without overwriting saved scroll values. A computer power loss/server stall cannot be handled by Lua.
+**Extract this ZIP first. GitHub does not unpack uploaded ZIPs.** Upload the extracted repository contents with folder structure preserved. Drag the actual `config` and `src` folders into GitHub's upload area; do not open those folders and upload their individual contents into the repository root. Alternatively use VS Code's Git support to push the extracted repository.
 
-## Calibration retained verbatim
+Before installing, verify these paths exist on GitHub:
 
-| Power | Measured altitude |
+```text
+install.lua
+manifest.json
+nexcore.lua
+config/default.lua
+config/local.example.lua
+src/nexcore/app.lua
+src/nexcore/display.lua
+src/nexcore/control.lua
+src/nexcore/hardware.lua
+src/nexcore/supervisor.lua
+src/nexcore/log.lua
+src/nexcore/calibration.lua
+src/nexcore/util.lua
+```
+
+The ZIP has repository files directly at its root, with no extra project-folder nesting. Uploading the ZIP itself is optional archival storage and does not install its contents.
+
+For the existing public repository, after uploading **this release's files**, use:
+
+```text
+wget https://raw.githubusercontent.com/sams930771/Nexcore-Flight-Control/main/install.lua nexcore-install-353.lua
+nexcore-install-353.lua sams930771 Nexcore-Flight-Control main nexcore
+nexcore/nexcore.lua
+```
+
+Replace the final destination `nexcore` with your existing working folder (for example `nexcore-ready`) to update that installation and retain its local configuration/logs. Launch that folder's `nexcore.lua` afterward. Installation does not start flight control or change outputs. Run Q in a controller before updating its files. The controller enables both redstone outputs when launched, as the working version does, while preserving current scroll values.
+
+For a different repository, replace the owner/repository and branch in both commands. Use a commit SHA instead of `main` for a fixed release. HTTP must be enabled on the server, and the repository files must be publicly accessible. No GitHub credentials are embedded. No repository upload was performed as part of this delivery.
+
+The installer stages the 13 runtime files, checks byte sizes and syntax, keeps the old folder as `.backup`, and copies `config/local.lua` and `logs` into the new installation. Failed downloads leave the old installation intact. Existing `.stage` or `.backup` folders are never overwritten: inspect and rename them before retrying. Keep your old logs. A failed final folder move attempts rollback. Byte sizes detect incomplete files, not malicious replacement; install only from a trusted repository.
+
+After editing runtime files, run `python tools/build_manifest.py` before pushing. Upload `manifest.json` together with changed files. Optional `startup.example.lua` runs the controller once; copy it to `/startup.lua` only if automatic launch is wanted and adjust its destination path.
+
+## Hardware / ship calibration
+
+Defaults are unchanged except the release number: back sensor **getHeight**, left/right burners **getScrollValue / setScrollValue**, manual integer power **0–500**, GO **38–48**, tick interval **0.25 s**, arrival tolerance **0.35 blocks** and vertical speed below **0.05 blocks/s**.
+
+| Power | Recorded altitude |
 | ---: | ---: |
 | 39 | 146.3424 |
 | 42 | 164.8510 |
@@ -32,69 +75,33 @@ Startup reads both existing burner scroll values before enabling both redstone o
 | 46 | 187.6230 |
 | 47 | 193.0140 |
 
-Prediction uses the original piecewise linear interpolation, extrapolating at the ends. GO chooses the closest prediction among integers 38–48, taking the lower power on an exact tie. It does not chase altitude or pulse between powers. A target between equilibrium heights may never be reached; the screen shows the predicted height. Measurements are specific to the original ship/load. No automatic calibration overwrites them.
+These are measurements for the original test ship/load. They are not automatically correct for another ship. `config/local.lua` can replace the calibration table for a specific ship; `config/local.example.lua` shows the override mechanism. Keep independent local configuration copies for different ships. Hardware, calibration and display modules remain separate; supporting more than two burners requires a future hardware/validation change and is not enabled by this UI release.
 
-## Install from GitHub
+## Restored main screen and truthful estimates
 
-1. Extract the ZIP and open the `NEXCORE-Flight-Control-v3.5.2` folder in VS Code.
-2. Create a GitHub repository and upload everything inside this folder, including `src`, `config`, `manifest.json`, and `install.lua`, to its root. GitHub's web upload may omit dotfolders; use VS Code Git to include the workflow/settings if wanted. No repository has been created or uploaded for you.
-3. Replace `YOUR_NAME` and `YOUR_REPO` below. Run on the CC computer with HTTP enabled:
+The 19-row screen restores the screenshot's NEXCORE header/version placement, monochrome styling, field alignment, three separators and control/entry/footer blocks. Main data includes altitude, target, error, vertical speed, acceleration, STOP Y, power/request, sensor freshness and status. F1 provides sample/attempt/failure counters, ages, heartbeats, call stages, per-burner readbacks, calibrated equilibrium estimate and errors.
 
-```text
-wget https://raw.githubusercontent.com/YOUR_NAME/YOUR_REPO/main/install.lua nexcore-install.lua
-nexcore-install.lua YOUR_NAME YOUR_REPO main nexcore
-nexcore/nexcore.lua
-```
+**STOP Y is `---`: the working backend contains no stopping-distance/braking model.** Its calibrated altitude prediction is an equilibrium estimate, not a stopping position, and is labeled **CAL ALT** on F1. A false stopping altitude has not been substituted. ACCEL is a presentation-only finite difference of velocity across observed successful sample timestamps; it is `---` until two samples are observed. Neither field influences flight control. PHASE is an informational label derived from the current mode/pending state, not a reinstated old autopilot state machine.
 
-Use a commit SHA instead of `main` in **both** commands for a fixed release. Private repos require an accessible raw endpoint; this installer does not embed GitHub credentials. No ZIP extraction is needed in Minecraft. The installer downloads the modular runtime; it never starts the controller or changes burner outputs.
+POWER is the last fully verified pair command; during an in-flight write it can lag actual per-side hardware. REQUEST shows a queued value and shows `---` during the in-flight write, because the working backend does not expose that command's value separately. F1 shows observed per-burner readbacks; these refresh on startup, scans and writes, not continuously for changes made externally. Partial-write errors remain blocked until D rescans, as in the working version.
 
-For a manual install, copy the folder into the computer's files, then run its `nexcore.lua`. No external Lua packages are needed in Minecraft.
+## Freeze prevention retained
 
-Optional startup: after verifying manual operation, copy `startup.example.lua` to `/startup.lua` and adjust its controller path if needed. It runs once and leaves you in the shell after Q or X. Installation never overwrites your existing startup program.
+The working app, hardware, supervisor, logging, utility, calibration and launcher modules are byte-for-byte unchanged. Only `display.lua` was replaced and an F1 branch added to `control.lua`; defaults/installer/manifest received the release number. Display rendering performs no event pulls, reads, sleeps, or peripheral operations.
 
-## Updates and local data
+The four supervised parallel workers, raw unfiltered UI events, independent sensor polling, nonblocking editor, timer handling, serial burner read/write verification and error recovery remain intact. Samples continue while stationary. Sensor age and unchanged age stay distinct. Existing full errors remain in rotating `logs/events.jsonl` / `logs/telemetry.jsonl`; `inspect.lua` produces a read-only inventory. F1's error row is a summary; use logs for full tracebacks.
 
-Run the installer again using the same destination. It stages every file, verifies manifest byte sizes and Lua syntax, preserves `config/local.lua` and `logs/`, and keeps the previous folder as `nexcore.backup`. A failed download leaves the existing install intact; inspect/remove `nexcore.stage` before retrying. An existing backup is never overwritten: rename/archive it before the next update. If the final folder move fails, the installer attempts to restore the old folder.
+A yielding mod call can wait without blocking UI workers. A non-yielding native call or server-wide stall can still stop all Lua work; this release does not claim to solve those external cases. In-game hardware was not tested here.
 
-To roll back, rename the new `nexcore` folder, then rename `nexcore.backup` to `nexcore`. Preserve any new logs before doing so. Updates do not migrate unidentified files elsewhere on the computer. Copy legacy calibration overrides into `config/local.lua` yourself if needed; the six known measurements are already present in defaults.
+## Verification and source layout
 
-The manifest checks truncation/byte counts, not cryptographic authenticity. Only install from your trusted repository over HTTPS. If editing runtime files before publishing, regenerate the manifest with `python tools/build_manifest.py`; CI checks it for drift.
-
-## Diagnostics and freezing
-
-The display retains the supplied v3.5.1 telemetry and all bindings, arranged to fit a normal 51×19 computer. The pre-diagnostic historic cockpit appearance was not recoverable and is not claimed as restored.
-
-- `logs/events.jsonl`: startup/exit, power requests, peripheral call begin/end and duration, errors, worker restarts.
-- `logs/telemetry.jsonl`: one record per second including independent worker heartbeats, render time, sample count, sensor age, unchanged age, call stages, observed power and errors.
-- Run `nexcore/inspect.lua` for a read-only method inventory at `logs/inventory.json`.
-
-Each stream rotates at roughly 256 KiB into three backups. Files are closed after each record to preserve evidence of the last call before a hang. Logs and local overrides are ignored by Git.
-
-**The known `read()` timer-consumption risk has been removed. A complete in-game freeze fix is not proven.** Sensor and burner workers can yield independently while UI/telemetry continue. A successful unchanged altitude sample refreshes sensor age; only the unchanged-age counter grows. This distinguishes a stable sensor reading from missing samples. Logging failures appear on the screen and do not disable flight input.
-
-See [docs/DIAGNOSTICS.md](docs/DIAGNOSTICS.md) for interpretation and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for event handling and failure policy.
-
-## Source layout and checks
-
-```text
-nexcore.lua              launcher; loads defaults and optional local overrides
-install.lua              wget bootstrap with staging and rollback
-inspect.lua              read-only peripheral method inventory
-src/nexcore/             app, control, hardware, display, calibration, log, supervisor, util
-config/default.lua       exact v3.5.1 hardware/power/calibration defaults
-config/local.example.lua optional override example
-docs/                    architecture, diagnostic guide and test results
-tests/                   deterministic event, worker and installer tests
-tools/build_manifest.py  regenerates installer file list and byte sizes
-.github/workflows/       Lua 5.2 syntax, behavior and manifest CI
-.vscode/                 optional Lua editor settings
-```
-
-With desktop Lua 5.2 installed, run from the repository root:
+Run from repository root with Lua 5.2 and Python installed:
 
 ```sh
 lua5.2 tests/run.lua
 python3 tests/check_manifest.py
 ```
 
-GitHub Actions also syntax-checks every Lua file. Tests mock Minecraft hardware; they cannot validate physical hover or the server's peripheral implementation. See [docs/TEST_RESULTS.md](docs/TEST_RESULTS.md) for the completed local checks.
+GitHub Actions also compiles every Lua source. See [test results](docs/TEST_RESULTS.md), [screenshot comparison](docs/INTERFACE_COMPARISON.md), and [unchanged-backend hashes](docs/BACKEND_COMPARISON.txt).
+
+`src/nexcore/` contains the modular runtime, `config/` contains defaults/overrides, `tests/` contains event/installer/launcher/display regression checks, `tools/` builds the manifest, and `docs/` contains previews and diagnostic/architecture notes. VS Code settings and GitHub CI are included under their normal dotfolders. Legacy flattened files and nested ZIP copies from the supplied download were excluded.

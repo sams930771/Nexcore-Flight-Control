@@ -1,0 +1,19 @@
+NEXCORE DIAGNOSTICS v3.5.3
+-----------------------------------
+LOOP: 40  MODE: GO
+SAMPLES: 40 TRY: 40 FAIL: 0
+AGE: 0.0s  UNCHANGED: 1.2s
+UI: 0.2s SENSOR: 0.2s LOG: 0.2s
+SENSOR: IDLE
+BURNER: IDLE
+ACTUAL: 39 / 39  REQ: 39
+CAL ALT: 146.342 CALL: ---ms
+RESTART UI/S/B/L: 0/0/0/0
+ERR: NONE
+-----------------------------------
+T=TARGET  G=GO  H=HOLD  M=MANUAL
++/-=POWER  D=SCAN  F1=MAIN
+Q=QUIT  X=BURNERS OFF
+-----------------------------------
+TARGET ENTRY: PRESS T
+FLIGHT LOG ACTIVE

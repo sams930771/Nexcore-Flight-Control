@@ -1,11 +1,13 @@
-# v3.5.2
+# v3.5.3 — Original interface restoration
 
-- Split v3.5.1 into configuration, hardware, control, UI, logging and supervision modules.
-- Retain T/G/H/M/+/-/D/Q/X, getHeight/getScrollValue/setScrollValue, power ranges, startup enable behavior, and all six measured calibration points.
-- Replace blocking target `read()` with event-based editing; give sensor, burner, UI and telemetry independent workers under the CC parallel API.
-- Catch/log worker exceptions and restart the affected worker. Keep Q/X active during target editing and worker restart backoff.
-- Add persistent rotating peripheral-boundary logs, heartbeats and JSONL telemetry.
-- Add explicit burner readback checks, fail-visible partial writes and stale-sensor GO rejection.
-- Add GitHub structure, wget staging installer, backup/rollback, local configuration preservation and tests.
+Base: user-supplied `Nexcore-Flight-Control-main.zip`, working v3.5.2.
 
-Known limits: no in-game hardware verification, no pre-diagnostic historic UI reconstruction, and no ability to preempt a non-yielding mod/server stall. GO remains an open-loop calibrated power selection, not altitude PID or landing/navigation.
+- Restored the screenshot's 19-row NEXCORE header, monochrome palette, aligned telemetry fields, separators, keyboard instructions and target-entry/footer placement.
+- Retained every existing keyboard action. Added F1 as an independent diagnostics-page toggle, usable during target entry.
+- Added display-only acceleration from observed velocity/sample timestamps. STOP Y remains explicitly unavailable because the working backend has no stopping model. Calibrated equilibrium prediction is labeled CAL ALT on diagnostics.
+- Kept actual backend status text rather than copying obsolete autopilot status logic from the old screenshot.
+- Replaced display.lua and added only the F1 presentation-state branch to control.lua. App scheduling, hardware polling/writes, error supervision, logs, calibration math and corrected launcher are unchanged byte-for-byte.
+- Retained all six calibration measurements and power/timing settings; incremented version/installer/manifest to 3.5.3.
+- Added screen bounds, stale warning, editor, F1/worker and visual layout regression checks. Reorganized flattened auxiliary files into standard GitHub folders. Packaged without old embedded archives or duplicate downloads.
+
+No old flight backend was restored. No in-game hardware testing was performed.

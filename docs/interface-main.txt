@@ -1,0 +1,19 @@
+NEXCORE FLIGHT CONTROL v3.5.3
+-----------------------------------
+MODE: GO  PHASE: NAVIGATE
+ALTITUDE: 152.662
+TARGET:   154.662
+ERROR:    2.000
+VERT SPEED: 0.0000
+ACCEL:      0.0000
+STOP Y:     ---
+POWER: 39  REQUEST: 39
+SENSOR: ONLINE  AGE: 0.0s  N: 40
+STATUS: POWER UPDATED
+-----------------------------------
+T=TARGET  G=GO  H=HOLD  M=MANUAL
++/-=POWER  D=SCAN  F1=DIAG
+Q=QUIT  X=BURNERS OFF
+-----------------------------------
+TARGET ENTRY: PRESS T
+FLIGHT LOG ACTIVE

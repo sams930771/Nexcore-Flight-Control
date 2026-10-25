@@ -1,5 +1,5 @@
 return {
-  version = "3.5.2",
+  version = "3.5.3",
   sensorSide = "back", sensorMethod = "getHeight",
   burnerSides = { "left", "right" },
   readPowerMethod = "getScrollValue", writePowerMethod = "setScrollValue",

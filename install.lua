@@ -22,7 +22,7 @@ local function download(path)
   return data
 end
 local manifest = textutils.unserializeJSON(download("manifest.json"))
-assert(type(manifest) == "table" and manifest.version == "3.5.2" and type(manifest.files) == "table", "Invalid/version-mismatched manifest")
+assert(type(manifest) == "table" and manifest.version == "3.5.3" and type(manifest.files) == "table", "Invalid/version-mismatched manifest")
 fs.makeDir(stage)
 for _, entry in ipairs(manifest.files) do
   local path = entry.path
@@ -52,5 +52,5 @@ if not ok then
   if fs.exists(backup) and not fs.exists(destination) then fs.move(backup,destination) end
   error("Install failed; previous installation restored if available: " .. tostring(err))
 end
-print("Installed NEXCORE 3.5.2. Run: " .. fs.combine(destination,"nexcore.lua"))
+print("Installed NEXCORE 3.5.3. Run: " .. fs.combine(destination,"nexcore.lua"))
 print("No burner outputs changed. Existing installation, if any, is in " .. backup)

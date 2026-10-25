@@ -1,0 +1,7 @@
+app.lua: byte-for-byte identical, SHA256 0a8d77f8cf082bc6db400fb7089589f27252dab550809c60a58c88b61f37cea5
+hardware.lua: byte-for-byte identical, SHA256 b59d7810750d96093f46c4b7f6dbfb2791bf1a3e624bdafc79d6c27067d06834
+log.lua: byte-for-byte identical, SHA256 5cccbc278868fccd29c7364f20946fed132316e6290ac83195acc2d93f4a0201
+supervisor.lua: byte-for-byte identical, SHA256 f51e6f56cc70efb9b85f20616b0ce33f0eac63d4949d84e64f7adfd394c0e4f9
+calibration.lua: byte-for-byte identical, SHA256 e1d32fa45b96119a7c0cbc1340239280664a3c0d1ebe0c171de6a2950ed291bb
+util.lua: byte-for-byte identical, SHA256 fdaa6ae7c0bb76f8442d9034e64bfbb8686d951fd2773155df146cce16ba28cb
+nexcore.lua: byte-for-byte identical corrected launcher

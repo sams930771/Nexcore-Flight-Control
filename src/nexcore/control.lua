@@ -13,6 +13,10 @@ function M.new(c, s, log)
     -- These two bindings always work, including while entering a target.
     if key == keys.q then s.exit = "hands_off"; return end
     if key == keys.x then s.exit = "off"; return end
+    if key == keys.f1 then
+      s.displayPage = s.displayPage=="diagnostics" and "main" or "diagnostics"
+      return
+    end
     if s.editing then
       if key == keys.enter or key == keys.numPadEnter then
         local value = tonumber(s.input)

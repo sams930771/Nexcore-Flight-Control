@@ -1,5 +1,5 @@
 {
-  "version": "3.5.2",
+  "version": "3.5.3",
   "files": [
     {
       "path": "nexcore.lua",
@@ -31,11 +31,11 @@
     },
     {
       "path": "src/nexcore/control.lua",
-      "bytes": 2451
+      "bytes": 2578
     },
     {
       "path": "src/nexcore/display.lua",
-      "bytes": 1838
+      "bytes": 4814
     },
     {
       "path": "src/nexcore/hardware.lua",
