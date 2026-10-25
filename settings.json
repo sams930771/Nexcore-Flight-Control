@@ -1,0 +1,6 @@
+{
+  "Lua.runtime.version": "Lua 5.2",
+  "Lua.workspace.checkThirdParty": false,
+  "Lua.diagnostics.globals": ["peripheral", "term", "colors", "keys", "redstone", "sleep", "parallel", "fs", "shell", "textutils", "http", "printError"],
+  "files.eol": "\n"
+}

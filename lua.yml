@@ -1,0 +1,14 @@
+name: Lua checks
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y lua5.2
+      - name: Syntax
+        run: find . -name '*.lua' -print0 | xargs -0 -n1 luac5.2 -p
+      - name: Behavior tests
+        run: lua5.2 tests/run.lua
+      - name: Manifest byte sizes
+        run: python3 tests/check_manifest.py

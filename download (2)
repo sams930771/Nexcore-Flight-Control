@@ -1,0 +1,6 @@
+logs/
+config/local.lua
+*.stage/
+*.backup/
+__pycache__/
+.venv/
