@@ -1,7 +1,9 @@
 -- Launch with: nexcore/nexcore.lua (or nexcore.lua from this folder).
 local root = fs.getDir(shell.getRunningProgram())
 local originalPath = package.path
-package.path = fs.combine(root,"src/?.lua") .. ";" .. fs.combine(root,"src/?/init.lua") .. ";" .. package.path
+-- CC resolves relative package patterns from the program folder, not the shell.
+-- Explicit leading slashes prevent the install folder being prepended twice.
+package.path = "/" .. fs.combine(root,"src/?.lua"):gsub("^/+", "") .. ";/" .. fs.combine(root,"src/?/init.lua"):gsub("^/+", "") .. ";" .. package.path
 local function run()
   local config = assert(loadfile(fs.combine(root,"config/default.lua")))()
   local localPath = fs.combine(root,"config/local.lua")
